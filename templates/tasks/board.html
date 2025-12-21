@@ -4,12 +4,14 @@
 <div class="p-6 bg-gray-50 min-h-screen">
     <h1 class="text-3xl font-bold mb-8 text-gray-800">Task Board</h1>
 
-    {% for status_value, tasks_in_group in board.items %}
+    {% for column in board %}
     <div class="mb-10 shadow-sm rounded-lg overflow-hidden bg-white border border-gray-200">
         <div class="px-4 py-3 bg-gray-100 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-700">
-                {{ status_value|upper }} 
-                <span class="ml-2 text-sm font-normal text-gray-500">({{ tasks_in_group|length }})</span>
+                {{ column.label }}
+                <span class="ml-2 text-sm font-normal text-gray-500">
+                    ({{ column.tasks|length }})
+                </span>
             </h2>
         </div>
 
@@ -25,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    {% for task in tasks_in_group %}
+                    {% for task in column.tasks %}
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4">
                             <span class="text-sm font-medium text-gray-900">{{ task.name }}</span>
@@ -54,7 +56,11 @@
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-xs text-gray-600">
-                                {{ task.deadline|date:"d M Y"|default:"No deadline" }}
+                                {% if task.deadline %}
+                                    {{ task.deadline|date:"d M Y" }}
+                                {% else %}
+                                    No deadline
+                                {% endif %}
                             </span>
                         </td>
                     </tr>

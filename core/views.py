@@ -28,10 +28,14 @@ class TaskBoardView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         tasks = context["tasks"]
 
-        context["board"] = {
-            status_value: tasks.filter(status=status_value)
-            for status_value, status_label in Task.Status.choices
-        }
+        context["board"] = [
+            {
+                "value": value,
+                "label": label,
+                "tasks": tasks.filter(status=value),
+            }
+            for value, label in Task.Status.choices
+        ]
 
         return context
 
