@@ -48,7 +48,7 @@ def update_task_status(request, pk):
     is_assignee = task.assignees.filter(pk=request.user.pk).exists()
 
     if not (is_author or is_assignee):
-        raise PermissionDenied("Вы не можете менять статус чужой задачи, если вы не исполнитель.")
+        raise PermissionDenied("You cannot change the status of someone else's task if you are not the assignee.")
 
     new_status = request.POST.get("status")
     if new_status in Task.Status.values:
@@ -63,7 +63,7 @@ def update_task_status(request, pk):
 def update_task_priority(request, pk):
     task = get_object_or_404(Task.objects.select_related("created_by"), pk=pk)
     if task.created_by != request.user:
-        raise PermissionDenied("Только создатель задачи может менять её приоритет.")
+        raise PermissionDenied("Only the task owner/creator has permission to modify its priority.")
 
     new_priority = request.POST.get("priority")
     if new_priority in Task.Priority.values:
