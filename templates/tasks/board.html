@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="p-6 bg-gray-50 min-h-screen">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Task Board</h1>
+
+    {% for status_value, tasks_in_group in board.items %}
+    <div class="mb-10 shadow-sm rounded-lg overflow-hidden bg-white border border-gray-200">
+        <div class="px-4 py-3 bg-gray-100 border-b border-gray-200 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-700">
+                {{ status_value|upper }} 
+                <span class="ml-2 text-sm font-normal text-gray-500">({{ tasks_in_group|length }})</span>
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200">
+                        <th class="px-6 py-3 w-1/3">Task Name</th>
+                        <th class="px-6 py-3">Assignees</th>
+                        <th class="px-6 py-3 text-center">Status</th>
+                        <th class="px-6 py-3 text-center">Priority</th>
+                        <th class="px-6 py-3">Deadline</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for task in tasks_in_group %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-medium text-gray-900">{{ task.name }}</span>
+                            <div class="text-xs text-gray-400">{{ task.task_type.name }}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex -space-x-2">
+                                {% for assignee in task.assignees.all %}
+                                <div class="h-8 w-8 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold" title="{{ assignee }}">
+                                    {{ assignee.username|slice:":1"|upper }}
+                                </div>
+                                {% empty %}
+                                <span class="text-gray-300 text-xs">—</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div id="status-container-{{ task.id }}">
+                                {% include "tasks/partials/task_status_badge.html" with task=task %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div id="priority-container-{{ task.id }}">
+                                {% include "tasks/partials/task_priority_badge.html" with task=task %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-xs text-gray-600">
+                                {{ task.deadline|date:"d M Y"|default:"No deadline" }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-gray-400 italic text-sm">
+                            No tasks in this category
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
