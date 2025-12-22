@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path("", views.TaskBoardView.as_view(), name="task-board"),
+
     path("tasks/", views.TaskBoardView.as_view(), name="task-board"),
 
     path(
