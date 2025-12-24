@@ -16,6 +16,13 @@ urlpatterns = [
         views.update_task_priority,
         name="task-priority-update"
     ),
+    path(
+    "tasks/create/",
+    views.create_task,
+    name="task-create-form"
+    ),
+    path('tasks/<int:task_id>/delete/', views.delete_task, name='delete-task'),
+
 ]
 
 app_name = "core"
