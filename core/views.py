@@ -1,6 +1,7 @@
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_http_methods
@@ -57,7 +58,16 @@ def update_task_status(request, pk):
         task.status = new_status
         task.save(update_fields=["status"])
 
-    return render(request, "tasks/partials/task_status_badge.html", {"task": task})
+    row_html = render_to_string("tasks/partials/task_row.html", {"task": task}, request=request)
+
+    target_id = f"tasks-{task.status.upper()}"
+
+    obb_row_html = row_html.replace(
+        '<tr ',
+        f'<tr hx-swap-oob="afterbegin:#{target_id}" '
+    )
+
+    return HttpResponse(obb_row_html)
 
 
 @login_required

@@ -32,9 +32,7 @@
                         <th class="px-6 py-3"></th> </tr>
                 </thead>
                 <tbody
-                    {% if column.value == "todo" %}
-                        id="tasks-TODO"
-                    {% endif %}
+                    id="tasks-{{ column.value|upper }}"
                     class="divide-y divide-gray-100">
                     {% for task in column.tasks %}
                         {% include "tasks/partials/task_row.html" %}

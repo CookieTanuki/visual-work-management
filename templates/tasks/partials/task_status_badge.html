@@ -9,8 +9,8 @@
 
         hx-post="{% url 'core:task-status-update' task.id %}"
         hx-trigger="change"
-        hx-target="#status-container-{{ task.id }}"
-        hx-swap="outerHTML"
+        hx-target="closest tr"
+        hx-swap="delete"
     >
         {% for value, label in task.Status.choices %}
             <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>
