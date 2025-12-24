@@ -12,7 +12,6 @@
         hx-target="#status-container-{{ task.id }}"
         hx-swap="outerHTML"
     >
-        {% csrf_token %}
         {% for value, label in task.Status.choices %}
             <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>
                 {{ label }}

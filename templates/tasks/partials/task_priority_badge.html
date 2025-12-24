@@ -15,7 +15,6 @@
 
         {% if request.user != task.created_by %} disabled title="Only the creator can change priority" {% endif %}
     >
-        {% csrf_token %}
         {% for value, label in task.Priority.choices %}
             <option value="{{ value }}" {% if task.priority == value %}selected{% endif %}>
                 {{ label }}
