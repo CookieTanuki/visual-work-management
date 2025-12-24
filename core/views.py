@@ -1,10 +1,12 @@
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
+from core.forms import TaskForm
 from core.models import Task, Project
 
 
@@ -71,3 +73,36 @@ def update_task_priority(request, pk):
         task.save(update_fields=["priority"])
 
     return render(request, "tasks/partials/task_priority_badge.html", {"task": task})
+
+
+@login_required
+def create_task(request):
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.created_by = request.user
+            task.status = task.Status.TODO
+            task.save()
+            form.save_m2m()
+
+            return render(
+                request,
+                "tasks/partials/task_row.html",
+                {"task": task}
+            )
+    else:
+        form = TaskForm()
+
+    return render(
+        request,
+        "tasks/partials/task_form_modal.html",
+        {"form": form}
+    )
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id, created_by=request.user)
+    task.delete()
+    return HttpResponse("")
