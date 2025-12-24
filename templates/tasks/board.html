@@ -3,7 +3,12 @@
 {% block content %}
 <div class="p-10 bg-gray-50 max-w-[90%] mx-auto">
     <h1 class="text-3xl font-bold mb-8 text-gray-800">Task Board</h1>
-
+        <button
+            hx-get="{% url 'core:task-create-form' %}"
+            hx-target="#modal-container"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+            + Add Task
+        </button>
     {% for column in board %}
     <div class="mb-10 shadow-sm rounded-lg overflow-hidden bg-white border border-gray-200">
         <div class="px-4 py-3 bg-gray-100 border-b border-gray-200 flex items-center justify-between">
@@ -19,57 +24,26 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200">
-                        <th class="px-6 py-3 w-1/3">Task Name</th>
-                        <th class="px-6 py-3">Assignees</th>
+                        <th class="px-6 py-3 w-1/6">Task Name</th>
+                        <th class="px-6 py-3">Description</th> <th class="px-6 py-3">Assignees</th>
                         <th class="px-6 py-3 text-center">Status</th>
                         <th class="px-6 py-3 text-center">Priority</th>
                         <th class="px-6 py-3">Deadline</th>
-                    </tr>
+                        <th class="px-6 py-3"></th> </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody
+                    {% if column.value == "todo" %}
+                        id="tasks-TODO"
+                    {% endif %}
+                    class="divide-y divide-gray-100">
                     {% for task in column.tasks %}
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4">
-                            <span class="text-sm font-medium text-gray-900">{{ task.name }}</span>
-                            <div class="text-xs text-gray-400">{{ task.task_type.name }}</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex -space-x-2">
-                                {% for assignee in task.assignees.all %}
-                                <div class="h-8 w-8 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold" title="{{ assignee }}">
-                                    {{ assignee.username|slice:":1"|upper }}
-                                </div>
-                                {% empty %}
-                                <span class="text-gray-300 text-xs">—</span>
-                                {% endfor %}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <div id="status-container-{{ task.id }}">
-                                {% include "tasks/partials/task_status_badge.html" with task=task %}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <div id="priority-container-{{ task.id }}">
-                                {% include "tasks/partials/task_priority_badge.html" with task=task %}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-xs text-gray-600">
-                                {% if task.deadline %}
-                                    {{ task.deadline|date:"d M Y" }}
-                                {% else %}
-                                    No deadline
-                                {% endif %}
-                            </span>
-                        </td>
-                    </tr>
+                        {% include "tasks/partials/task_row.html" %}
                     {% empty %}
-                    <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-gray-400 italic text-sm">
-                            No tasks in this category
-                        </td>
-                    </tr>
+                        <tr id="empty-row-{{ column.value|upper }}">
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-400 italic text-sm">
+                                No tasks in this category
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
