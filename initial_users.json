@@ -27,6 +27,13 @@
       "name": "Project Manager"
     }
   },
+  {
+    "model": "core.position",
+    "pk": 5,
+    "fields": {
+      "name": "Employee"
+    }
+  },
 
   {
     "model": "core.worker",
