@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'VisualWorkManagement.urls'
+ROOT_URLCONF = 'visual_work_management.urls'
 
 TEMPLATES = [
     {
@@ -53,7 +53,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'VisualWorkManagement.wsgi.application'
+WSGI_APPLICATION = 'visual_work_management.wsgi.application'
 
 
 # Password validation
