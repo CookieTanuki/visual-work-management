@@ -113,6 +113,6 @@ def create_task(request):
 @login_required
 @require_http_methods(["DELETE"])
 def delete_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id, created_by=request.user)
+    task = get_object_or_404(Task.objects.select_related("created_by"), id=task_id, created_by=request.user)
     task.delete()
     return HttpResponse("")
