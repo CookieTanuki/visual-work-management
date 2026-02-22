@@ -25,15 +25,10 @@ class TaskAdmin(admin.ModelAdmin):
     )
 
     list_select_related = ("task_type", "project", "created_by")
-    # Боковая панель фильтрации
     list_filter = ("status", "priority", "task_type", "project", "tags")
-    # Поиск по названию задачи и описанию
     search_fields = ("name", "description")
-    # Позволяет выбирать много исполнителей и тегов
     filter_horizontal = ("assignees", "tags")
-    # Автоматическая дата создания
     readonly_fields = ("created_at", "updated_at")
-    # Новые задачи начинаются сверху
     ordering = ("-created_at",)
 
 @admin.register(Project)

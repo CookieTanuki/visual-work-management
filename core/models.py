@@ -68,7 +68,6 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deadline = models.DateTimeField(null=True, blank=True)
 
-    # Статусы и приоритеты
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
@@ -80,7 +79,6 @@ class Task(models.Model):
         default=Priority.MEDIUM
     )
 
-    # Связи
     task_type = models.ForeignKey(TaskType, on_delete=models.PROTECT, related_name="tasks")
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks", null=True, blank=True)
     created_by = models.ForeignKey(
