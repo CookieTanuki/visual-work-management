@@ -1,14 +1,27 @@
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 
-from core.forms import TaskForm
+from core.forms import TaskForm, WorkerCreationForm
 from core.models import Task, Project
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = WorkerCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("core:task-board")
+    else:
+        form = WorkerCreationForm()
+    return render(request, "registration/register.html", {"form": form})
 
 
 class TaskBoardView(LoginRequiredMixin, ListView):

@@ -1,5 +1,19 @@
 from django import forms
-from core.models import Task
+from django.contrib.auth.forms import UserCreationForm
+from core.models import Task, Worker
+
+class WorkerCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = Worker
+        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email", "position",)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'
+            else:
+                field.widget.attrs['class'] = 'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'
 
 
 class TaskForm(forms.ModelForm):
