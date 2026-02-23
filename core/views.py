@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 
 from core.forms import TaskForm, WorkerCreationForm
-from core.models import Task, Project
+from core.models import Task, Project, Team
 
 
 def register_view(request):
@@ -159,4 +159,35 @@ def create_project(request):
 def delete_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     project.delete()
+    return HttpResponse("")
+
+
+class TeamListView(LoginRequiredMixin, ListView):
+    model = Team
+    template_name = "teams/teams.html"
+    context_object_name = "teams"
+
+    def get_queryset(self):
+        return Team.objects.prefetch_related("members").all()
+
+
+@login_required
+def create_team(request):
+    from core.forms import TeamForm
+    if request.method == "POST":
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            team = form.save()
+            return render(request, "teams/partials/team_row.html", {"team": team})
+    else:
+        form = TeamForm()
+
+    return render(request, "teams/partials/team_form_modal.html", {"form": form})
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_team(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    team.delete()
     return HttpResponse("")

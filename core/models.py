@@ -48,6 +48,9 @@ class Project(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="projects")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Task(models.Model):
     class Status(models.TextChoices):

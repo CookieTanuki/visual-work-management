@@ -2,13 +2,15 @@
 
 {% block content %}
 <div class="p-10 bg-gray-50 max-w-[90%] mx-auto">
-    <h1 class="text-3xl font-bold mb-8 text-gray-800">Task Board</h1>
-        <button
-            hx-get="{% url 'core:task-create-form' %}"
-            hx-target="#modal-container"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
-            + Add Task
-        </button>
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold mb-8 text-gray-800">Task Board</h1>
+            <button
+                hx-get="{% url 'core:task-create-form' %}"
+                hx-target="#modal-container"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                + Add Task
+            </button>
+    </div>
     {% for column in board %}
     <div class="mb-10 shadow-sm rounded-lg overflow-hidden bg-white border border-gray-200">
         <div class="px-4 py-3 bg-gray-100 border-b border-gray-200 flex items-center justify-between">
