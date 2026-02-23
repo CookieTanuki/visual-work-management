@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="p-10 bg-gray-50 max-w-[90%] mx-auto">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Projects</h1>
+        <button hx-get="{% url 'core:project-create-form' %}" hx-target="#modal-container"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+            + Add Project
+        </button>
+    </div>
+
+    <div class="mb-10 shadow-sm rounded-lg overflow-hidden bg-white border border-gray-200">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr
+                        class="text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200">
+                        <th class="px-6 py-3">Project Name</th>
+                        <th class="px-6 py-3">Team</th>
+                        <th class="px-6 py-3">Created At</th>
+                        <th class="px-6 py-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projects-list" class="divide-y divide-gray-100">
+                    {% for project in projects %}
+                    {% include "projects/partials/project_row.html" %}
+                    {% empty %}
+                    <tr id="empty-row-projects">
+                        <td colspan="4" class="px-6 py-8 text-center text-gray-400 italic text-sm">
+                            No projects created yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

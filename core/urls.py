@@ -7,6 +7,10 @@ urlpatterns = [
 
     path("tasks/", views.TaskBoardView.as_view(), name="task-board"),
 
+    path("projects/", views.ProjectListView.as_view(), name="project-list"),
+    path("projects/create/", views.create_project, name="project-create-form"),
+    path("projects/<int:project_id>/delete/", views.delete_project, name="delete-project"),
+
     path(
         "tasks/<int:pk>/status/",
         views.update_task_status,

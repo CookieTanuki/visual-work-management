@@ -129,3 +129,34 @@ def delete_task(request, task_id):
     task = get_object_or_404(Task.objects.select_related("created_by"), id=task_id, created_by=request.user)
     task.delete()
     return HttpResponse("")
+
+
+class ProjectListView(LoginRequiredMixin, ListView):
+    model = Project
+    template_name = "projects/projects.html"
+    context_object_name = "projects"
+
+    def get_queryset(self):
+        return Project.objects.select_related("team").all()
+
+
+@login_required
+def create_project(request):
+    from core.forms import ProjectForm
+    if request.method == "POST":
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save()
+            return render(request, "projects/partials/project_row.html", {"project": project})
+    else:
+        form = ProjectForm()
+
+    return render(request, "projects/partials/project_form_modal.html", {"form": form})
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    project.delete()
+    return HttpResponse("")
