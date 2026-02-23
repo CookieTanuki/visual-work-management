@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Task Manager{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="{% url 'core:task-board' %}" class="text-xl font-bold text-gray-800">
+                TaskBoard
+            </a>
+
+            <!-- Navigation -->
+            <nav class="flex items-center space-x-6 text-sm font-medium text-gray-600">
+                <a href="{% url 'core:task-board' %}" class="hover:text-gray-900">
+                    Tasks
+                </a>
+                <a href="{% url 'core:project-list' %}" class="hover:text-gray-900">
+                    Projects
+                </a>
+                <a href="{% url 'core:team-list' %}" class="hover:text-gray-900">
+                    Teams
+                </a>
+
+                {% if user.is_authenticated %}
+                <span class="text-gray-400">|</span>
+                <span>{{ user.username }}</span>
+                <form method="post" action="{% url 'logout' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-500 hover:text-red-600 font-semibold">
+                        Logout
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}" class="hover:text-gray-900">
+                    Login
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-6 mt-4 space-y-2">
+        {% for message in messages %}
+        <div class="px-4 py-3 rounded text-sm
+            {% if message.tags == 'error' %} bg-red-100 text-red-700
+            {% elif message.tags == 'success' %} bg-green-100 text-green-700
+            {% else %} bg-blue-100 text-blue-700 {% endif %}
+        ">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main content -->
+    <main class="flex-1 max-w-full px-10 py-6">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <div id="modal-container"></div>
+
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        });
+    </script>
+
+</body>
+
+</html>

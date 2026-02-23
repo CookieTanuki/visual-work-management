@@ -1,0 +1,187 @@
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+
+from core.forms import TaskForm, WorkerCreationForm
+from core.models import Task, Project, Team
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = WorkerCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("core:task-board")
+    else:
+        form = WorkerCreationForm()
+    return render(request, "registration/register.html", {"form": form})
+
+
+class TaskBoardView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = "tasks/board.html"
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        queryset = (Task
+                    .objects
+                    .select_related("task_type", "project", "created_by")
+                    .prefetch_related("assignees", "tags"))
+
+        if self.request.GET.get("filter") == "my":
+            return queryset.filter(assignees=self.request.user)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tasks = context["tasks"]
+
+        context["board"] = [
+            {
+                "value": value,
+                "label": label,
+                "tasks": tasks.filter(status=value),
+            }
+            for value, label in Task.Status.choices
+        ]
+
+        return context
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_task_status(request, pk):
+    task = get_object_or_404(Task.objects.prefetch_related("assignees"), pk=pk)
+    is_author = task.created_by == request.user
+    is_assignee = task.assignees.filter(pk=request.user.pk).exists()
+
+    if not (is_author or is_assignee):
+        raise PermissionDenied("You cannot change the status of someone else's task if you are not the assignee.")
+
+    new_status = request.POST.get("status")
+    if new_status in Task.Status.values:
+        task.status = new_status
+        task.save(update_fields=["status"])
+
+    response = HttpResponse()
+    response["HX-Trigger"] = "taskUpdated"
+    return response
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_task_priority(request, pk):
+    task = get_object_or_404(Task.objects.select_related("created_by"), pk=pk)
+    if task.created_by != request.user:
+        raise PermissionDenied("Only the task owner/creator has permission to modify its priority.")
+
+    new_priority = request.POST.get("priority")
+    if new_priority in Task.Priority.values:
+        task.priority = new_priority
+        task.save(update_fields=["priority"])
+
+    return render(request, "tasks/partials/task_priority_badge.html", {"task": task})
+
+
+@login_required
+def create_task(request):
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.created_by = request.user
+            task.status = task.Status.TODO
+            task.save()
+            form.save_m2m()
+
+            response = HttpResponse()
+            response["HX-Trigger"] = "taskUpdated"
+            return response
+    else:
+        form = TaskForm()
+
+    return render(
+        request,
+        "tasks/partials/task_form_modal.html",
+        {"form": form}
+    )
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_task(request, task_id):
+    task = get_object_or_404(Task.objects.select_related("created_by"), id=task_id, created_by=request.user)
+    task.delete()
+    response = HttpResponse()
+    response["HX-Trigger"] = "taskUpdated"
+    return response
+
+
+
+class ProjectListView(LoginRequiredMixin, ListView):
+    model = Project
+    template_name = "projects/projects.html"
+    context_object_name = "projects"
+
+    def get_queryset(self):
+        return Project.objects.select_related("team").all()
+
+
+@login_required
+def create_project(request):
+    from core.forms import ProjectForm
+    if request.method == "POST":
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save()
+            return render(request, "projects/partials/project_row.html", {"project": project})
+    else:
+        form = ProjectForm()
+
+    return render(request, "projects/partials/project_form_modal.html", {"form": form})
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    project.delete()
+    return HttpResponse("")
+
+
+class TeamListView(LoginRequiredMixin, ListView):
+    model = Team
+    template_name = "teams/teams.html"
+    context_object_name = "teams"
+
+    def get_queryset(self):
+        return Team.objects.prefetch_related("members").all()
+
+
+@login_required
+def create_team(request):
+    from core.forms import TeamForm
+    if request.method == "POST":
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            team = form.save()
+            return render(request, "teams/partials/team_row.html", {"team": team})
+    else:
+        form = TeamForm()
+
+    return render(request, "teams/partials/team_form_modal.html", {"form": form})
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_team(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    team.delete()
+    return HttpResponse("")

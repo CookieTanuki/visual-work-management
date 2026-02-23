@@ -1,0 +1,14 @@
+<div id="status-container-{{ task.id }}">
+    <select name="status" class="monday-select w-full text-center py-2 px-1 rounded font-semibold text-sm cursor-pointer appearance-none transition-colors duration-200
+        {% if task.status == 'done' %} bg-green-500 text-white hover:bg-green-600
+        {% elif task.status == 'in_progress' %} bg-orange-400 text-white hover:bg-orange-500
+        {% elif task.status == 'stuck' %} bg-red-500 text-white hover:bg-red-600
+        {% else %} bg-gray-400 text-white hover:bg-gray-500 {% endif %}"
+        hx-post="{% url 'core:task-status-update' task.id %}" hx-trigger="change" hx-swap="none">
+        {% for value, label in task.Status.choices %}
+        <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>
+            {{ label }}
+        </option>
+        {% endfor %}
+    </select>
+</div>

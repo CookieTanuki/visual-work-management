@@ -1,0 +1,24 @@
+<div id="priority-container-{{ task.id }}">
+    <select
+        name="priority"
+        class="monday-select w-full py-2 px-1 rounded text-center font-semibold text-sm cursor-pointer
+        {% if task.priority == 'urgent' %} bg-red-600 text-white
+        {% elif task.priority == 'high' %} bg-orange-400 text-white
+        {% elif task.priority == 'medium' %} bg-blue-400 text-white
+        {% elif task.priority == 'low' %} bg-gray-400 text-white
+        {% else %} bg-gray-200 text-gray-500 {% endif %}"
+
+        hx-post="{% url 'core:task-priority-update' task.id %}"
+        hx-trigger="change"
+        hx-target="#priority-container-{{ task.id }}"
+        hx-swap="outerHTML"
+
+        {% if request.user != task.created_by %} disabled title="Only the creator can change priority" {% endif %}
+    >
+        {% for value, label in task.Priority.choices %}
+            <option value="{{ value }}" {% if task.priority == value %}selected{% endif %}>
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+</div>

@@ -1,0 +1,17 @@
+.monday-select {
+    text-align-last: center;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: all 0.2s ease;
+}
+
+.monday-select:focus {
+    outline: none;
+    filter: brightness(1.1);
+}
+
+.monday-select:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}

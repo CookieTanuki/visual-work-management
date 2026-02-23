@@ -1,0 +1,186 @@
+[
+  {
+    "model": "core.position",
+    "pk": 1,
+    "fields": {
+      "name": "Backend Developer"
+    }
+  },
+  {
+    "model": "core.position",
+    "pk": 2,
+    "fields": {
+      "name": "Frontend Developer"
+    }
+  },
+  {
+    "model": "core.position",
+    "pk": 3,
+    "fields": {
+      "name": "QA Engineer"
+    }
+  },
+  {
+    "model": "core.position",
+    "pk": 4,
+    "fields": {
+      "name": "Project Manager"
+    }
+  },
+  {
+    "model": "core.position",
+    "pk": 5,
+    "fields": {
+      "name": "Employee"
+    }
+  },
+
+  {
+    "model": "core.tasktype",
+    "pk": 1,
+    "fields": {
+      "name": "Bug"
+    }
+  },
+  {
+    "model": "core.tasktype",
+    "pk": 2,
+    "fields": {
+      "name": "New Feature"
+    }
+  },
+  {
+    "model": "core.tasktype",
+    "pk": 3,
+    "fields": {
+      "name": "Breaking Change"
+    }
+  },
+  {
+    "model": "core.tasktype",
+    "pk": 4,
+    "fields": {
+      "name": "Refactor"
+    }
+  },
+  {
+    "model": "core.tasktype",
+    "pk": 5,
+    "fields": {
+      "name": "QA"
+    }
+  },
+
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "ivan.petrov",
+      "first_name": "Ivan",
+      "last_name": "Petrov",
+      "email": "ivan.petrov@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 1,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "olga.shevchenko",
+      "first_name": "Olga",
+      "last_name": "Shevchenko",
+      "email": "olga.shevchenko@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 2,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "maksym.koval",
+      "first_name": "Maksym",
+      "last_name": "Koval",
+      "email": "maksym.koval@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 3,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "anna.melnyk",
+      "first_name": "Anna",
+      "last_name": "Melnyk",
+      "email": "anna.melnyk@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 4,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "employee1",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 5,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "employee2",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane.doe@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 5,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "employee3",
+      "first_name": "Bob",
+      "last_name": "Bobovich",
+      "email": "bob.bobovich@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 5,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  },
+  {
+    "model": "core.worker",
+    "fields": {
+      "username": "employee4",
+      "first_name": "Bobina",
+      "last_name": "Bobovich",
+      "email": "bobina.bobovich@example.com",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "position": 5,
+      "password": "pbkdf2_sha256$600000$testpassword$Qn6PqHj3G7L5x2v1K3fU7cXb8L4YkTgk2qU0rE1EwXQ="
+    }
+  }
+]
