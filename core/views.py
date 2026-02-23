@@ -71,16 +71,9 @@ def update_task_status(request, pk):
         task.status = new_status
         task.save(update_fields=["status"])
 
-    row_html = render_to_string("tasks/partials/task_row.html", {"task": task}, request=request)
-
-    target_id = f"tasks-{task.status.upper()}"
-
-    obb_row_html = row_html.replace(
-        '<tr ',
-        f'<tr hx-swap-oob="afterbegin:#{target_id}" '
-    )
-
-    return HttpResponse(obb_row_html)
+    response = HttpResponse()
+    response["HX-Trigger"] = "taskUpdated"
+    return response
 
 
 @login_required
@@ -109,11 +102,9 @@ def create_task(request):
             task.save()
             form.save_m2m()
 
-            return render(
-                request,
-                "tasks/partials/task_row.html",
-                {"task": task}
-            )
+            response = HttpResponse()
+            response["HX-Trigger"] = "taskUpdated"
+            return response
     else:
         form = TaskForm()
 
@@ -128,7 +119,10 @@ def create_task(request):
 def delete_task(request, task_id):
     task = get_object_or_404(Task.objects.select_related("created_by"), id=task_id, created_by=request.user)
     task.delete()
-    return HttpResponse("")
+    response = HttpResponse()
+    response["HX-Trigger"] = "taskUpdated"
+    return response
+
 
 
 class ProjectListView(LoginRequiredMixin, ListView):

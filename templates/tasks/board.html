@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="p-10 bg-gray-50 max-w-[90%] mx-auto">
+<div id="task-board-container" class="p-10 bg-gray-50 max-w-[90%] mx-auto">
+    <div hx-get="{% url 'core:task-board' %}{% if request.GET.filter %}?filter={{ request.GET.filter }}{% endif %}"
+        hx-trigger="taskUpdated from:body" hx-select="#task-board-container" hx-target="#task-board-container"
+        hx-swap="outerHTML" style="display:none;"></div>
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Task Board</h1>
-            <button
-                hx-get="{% url 'core:task-create-form' %}"
-                hx-target="#modal-container"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
-                + Add Task
-            </button>
+        <button hx-get="{% url 'core:task-create-form' %}" hx-target="#modal-container"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+            + Add Task
+        </button>
     </div>
     {% for column in board %}
     <div class="mb-10 shadow-sm rounded-lg overflow-hidden bg-white border border-gray-200">
@@ -25,25 +26,26 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200">
+                    <tr
+                        class="text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-200">
                         <th class="px-6 py-3 w-1/6">Task Name</th>
-                        <th class="px-6 py-3">Description</th> <th class="px-6 py-3">Assignees</th>
+                        <th class="px-6 py-3">Description</th>
+                        <th class="px-6 py-3">Assignees</th>
                         <th class="px-6 py-3 text-center">Status</th>
                         <th class="px-6 py-3 text-center">Priority</th>
                         <th class="px-6 py-3">Deadline</th>
-                        <th class="px-6 py-3"></th> </tr>
+                        <th class="px-6 py-3">Actions</th>
+                    </tr>
                 </thead>
-                <tbody
-                    id="tasks-{{ column.value|upper }}"
-                    class="divide-y divide-gray-100">
+                <tbody id="tasks-{{ column.value|upper }}" class="divide-y divide-gray-100">
                     {% for task in column.tasks %}
-                        {% include "tasks/partials/task_row.html" %}
+                    {% include "tasks/partials/task_row.html" %}
                     {% empty %}
-                        <tr id="empty-row-{{ column.value|upper }}">
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-400 italic text-sm">
-                                No tasks in this category
-                            </td>
-                        </tr>
+                    <tr id="empty-row-{{ column.value|upper }}">
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-400 italic text-sm">
+                            No tasks in this category
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
